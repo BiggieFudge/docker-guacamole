@@ -20,12 +20,11 @@ jobs:
         jfrog_access_token: ${{ secrets.JF_ACCESS_TOKEN }}
     - name: Configure JFrog CLI
       run: |
-        jfrog c add my-jfrog-server \
-          --url "${{ vars.JF_URL }}" \
-          --access-token "${{ secrets.JF_ACCESS_TOKEN }}" \
-          --interactive=false \
-          --artifactory \
-          --xray
+        jfrog c add idani \
+          --artifactory-url=https://idani.jfrog.io/ \
+          --access-token="${{ secrets.JF_ACCESS_TOKEN }}" \
+          --xray-url=https://idani.jfrog.io/xray \
+          --interactive=false
     - name: Scan Docker image with JFrog
       env:
         JFROG_CLI_LOG_LEVEL: DEBUG
