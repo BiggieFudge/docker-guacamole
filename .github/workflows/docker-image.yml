@@ -1,34 +1,31 @@
 name: Docker Image CI
-
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
     - name: Build the Docker image
       run: |
         docker build . --file Dockerfile --tag my-image-name:test
-
     - name: Set up JFrog CLI
       uses: jfrog/setup-jfrog-cli@v4
       with:
-        # JFrog platform url (for example: https://acme.jfrog.io)
         jfrog_platform_url: ${{ vars.JF_URL }}
         jfrog_access_token: ${{ secrets.JF_ACCESS_TOKEN }}
-
-    - name: Configure Xray URL
+    - name: Configure JFrog CLI
       run: |
-        jfrog c edit --xray-url=https://idani.jfrog.io/xray
-
+        jfrog c add my-jfrog-server \
+          --url "${{ vars.JF_URL }}" \
+          --access-token "${{ secrets.JF_ACCESS_TOKEN }}" \
+          --interactive=false \
+          --artifactory \
+          --xray
     - name: Scan Docker image with JFrog
       env:
         JFROG_CLI_LOG_LEVEL: DEBUG
