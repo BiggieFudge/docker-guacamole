@@ -26,4 +26,6 @@ jobs:
         jfrog_access_token: ${{ secrets.JF_ACCESS_TOKEN }}
 
     - name: Scan Docker image with JFrog
+      env:
+        JFROG_CLI_LOG_LEVEL: DEBUG
       run: jfrog docker scan my-image-name:test
