@@ -23,8 +23,11 @@ jobs:
       with:
         # JFrog platform url (for example: https://acme.jfrog.io)
         jfrog_platform_url: ${{ vars.JF_URL }}
-        jfrog_xray_url: https://idani.jfrog.io/xray
         jfrog_access_token: ${{ secrets.JF_ACCESS_TOKEN }}
+
+    - name: Configure Xray URL
+      run: |
+        jfrog c edit --xray-url=https://idani.jfrog.io/xray
 
     - name: Scan Docker image with JFrog
       env:
