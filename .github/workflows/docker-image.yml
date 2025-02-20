@@ -7,22 +7,23 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
+
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:test
-    - uses: jfrog/setup-jfrog-cli@v4
-    env:
-      # JFrog platform url (for example: https://acme.jfrog.io)
-      JF_URL: ${{ vars.JF_URL }}
-      JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
-      run: jf docker scan my-image-name:test
-      
+      run: |
+        docker build . --file Dockerfile --tag my-image-name:test
 
+    - name: Set up JFrog CLI
+      uses: jfrog/setup-jfrog-cli@v4
+      with:
+        # JFrog platform url (for example: https://acme.jfrog.io)
+        jfrog_platform_url: ${{ vars.JF_URL }}
+        jfrog_access_token: ${{ secrets.JF_ACCESS_TOKEN }}
 
-
+    - name: Scan Docker image with JFrog
+      run: jfrog docker scan my-image-name:test
